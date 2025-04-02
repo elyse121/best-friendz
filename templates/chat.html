@@ -755,14 +755,7 @@
       </div>
     </div>
     <!-- Password Protection Modal -->
-<div id="passwordModal" class="modal-overlay">
-  <div class="modal-content">
-    <h3>Enter Access Code</h3>
-    <input type="password" id="accessCode" placeholder="Enter the secret code">
-    <button id="submitCode">Submit</button>
-    <p id="errorMsg" class="error-message"></p>
-  </div>
-</div>
+
 
 <!-- Blur overlay for restricted content -->
 <div id="contentBlur" class="blur-overlay"></div>
@@ -896,23 +889,7 @@
     document.body.style.overflow = 'hidden'; // Prevent scrolling
   }
   
-  submitBtn.addEventListener('click', function() {
-    const enteredCode = accessCodeInput.value.trim();
-    
-    if (enteredCode === 'AMIGOS') {
-      // Correct code
-      localStorage.setItem('accessGranted', 'true');
-      passwordModal.style.display = 'none';
-      contentBlur.style.display = 'none';
-      document.body.style.overflow = 'auto';
-    } else {
-      // Wrong code
-      errorMsg.textContent = 'Incorrect code. Please try again.';
-      errorMsg.style.display = 'block';
-      accessCodeInput.value = '';
-      accessCodeInput.focus();
-    }
-  });
+  
   
   // Also allow Enter key to submit
   accessCodeInput.addEventListener('keypress', function(e) {
