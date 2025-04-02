@@ -1,0 +1,653 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our ------- Tunnel</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/bbbm.ico' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a0dad;
+            --secondary-color: #ff6b6b;
+            --bg-color: #1a1a2e;
+            --text-color: #f1f1f1;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        .tunnel-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tunnel-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .tunnel-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://i.imgur.com/JQlE6gN.jpg') center/cover;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 2rem;
+        }
+        
+        .memory-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            aspect-ratio: 1/1;
+        }
+        
+        .memory-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .memory-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .memory-card .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .memory-card:hover .caption {
+            transform: translateY(0);
+        }
+        
+        .upload-section {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .heart {
+            position: absolute;
+            opacity: 0;
+            animation: float 6s ease-in infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Memory Form Styles */
+        .memory-form-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-out;
+        }
+
+        .memory-form-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .memory-form-container {
+            background: var(--bg-color);
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease-out;
+            position: relative;
+        }
+
+        .memory-form-overlay.active .memory-form-container {
+            transform: translateY(0);
+        }
+
+        .close-form {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .form-submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="tunnel-header">
+        <a href="/posts/" style="color: #00bfff; font-weight: bold; font-size: 18px; text-decoration: none; padding: 10px 15px; border-radius: 5px; background-color: #1e1e1e; transition: background-color 0.3s, color 0.3s;">
+            Posts
+        </a><br>
+        <h1>Our ----- Tunnel</h1>
+
+        
+    </div>
+    
+    <div class="gallery-container" id="gallery">
+        {% for memory in memories %}
+        <div class="memory-card">
+            <img src="{{ memory.image.url }}" alt="{{ memory.name }}" class="gallery-image" data-full="{{ memory.image.url }}">
+            <div class="caption">
+                <h3>{{ memory.name }}</h3>
+                <p>{{ memory.caption }}</p>
+                <small>{{ memory.created_at|date:"M d, Y h:i A" }}</small>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>No memories yet. Click "Upload Our Memory" to add your first memory!</p>
+        </div>
+        {% endfor %}
+        
+        <!-- Image Modal Viewer -->
+        <div class="image-modal" id="imageModal">
+            <span class="close-modal">&times;</span>
+            <img class="modal-content" id="modalImage">
+            <div class="modal-caption">
+                <h3 id="modalTitle"></h3>
+                <p id="modalText"></p>
+                <small id="modalDate"></small>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        /* Image Modal Styles */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            display: block;
+            max-width: 90%;
+            max-height: 80vh;
+            margin: 5% auto;
+            animation: zoomIn 0.3s;
+        }
+        
+        .modal-caption {
+            text-align: center;
+            color: white;
+            padding: 10px 20px;
+            max-width: 80%;
+            margin: 0 auto 50px;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--secondary-color);
+            transform: scale(1.2);
+        }
+        
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        
+        @keyframes zoomIn {
+            from {transform: scale(0.8);}
+            to {transform: scale(1);}
+        }
+        
+        /* Make images cursor pointer to indicate clickable */
+        .gallery-image {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .gallery-image:hover {
+            transform: scale(1.02);
+        }
+    </style>
+    
+    <script>
+        // Image Modal Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalText = document.getElementById('modalText');
+            const modalDate = document.getElementById('modalDate');
+            const closeBtn = document.querySelector('.close-modal');
+            
+            // Get all gallery images
+            const images = document.querySelectorAll('.gallery-image');
+            
+            // Add click event to each image
+            images.forEach(img => {
+                img.addEventListener('click', function() {
+                    modal.style.display = 'block';
+                    modalImg.src = this.dataset.full;
+                    modalTitle.textContent = this.closest('.memory-card').querySelector('h3').textContent;
+                    modalText.textContent = this.closest('.memory-card').querySelector('p').textContent;
+                    modalDate.textContent = this.closest('.memory-card').querySelector('small').textContent;
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                });
+            });
+            
+            // Close modal
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close when clicking outside image
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Close with ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+    
+    <div class="upload-section">
+        <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-cloud-upload-alt"></i>
+            Upload Our Memory
+        </button>
+        
+    </div>
+    
+    <!-- Memory Form Overlay -->
+    <div class="memory-form-overlay" id="memoryFormOverlay">
+        <div class="memory-form-container">
+            <button class="close-form" id="closeForm">&times;</button>
+            <h2>Share a Memory</h2>
+            <form id="memoryForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="memoryName">Memory Name</label>
+                    <input type="text" id="memoryName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryImage">Image</label>
+                    <input type="file" id="memoryImage" name="image" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryCaption">Caption</label>
+                    <textarea id="memoryCaption" name="caption" required></textarea>
+                </div>
+                <button type="submit" class="form-submit-btn">
+                    <i class="fas fa-save"></i> Save Memory
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="floating-hearts" id="heartsContainer"></div>
+    <!-- Add this just before </body> -->
+<div class="code-overlay" id="codeOverlay">
+    <div class="code-box">
+      <h2>Enter Access Code</h2>
+      <input type="text" id="codeInput" placeholder="Enter code..." maxlength="3">
+      <p class="hint">XO2??????????</p>
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
+  </div>
+  
+  <style>
+    /* Code Overlay CSS */
+    .code-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+  
+    .code-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+  
+    .code-box {
+      background: var(--bg-color);
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 300px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+  
+    .code-overlay.active .code-box {
+      transform: scale(1);
+    }
+  
+    .code-box h2 {
+      margin-top: 0;
+      color: var(--text-color);
+    }
+  
+    .code-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      border: 2px solid var(--primary-color);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-color);
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+  
+    .hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 5px;
+    }
+  
+    .error-msg {
+      color: var(--secondary-color);
+      height: 20px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+  
+  <script>
+    // Code Overlay JS
+    const codeOverlay = document.getElementById('codeOverlay');
+    const codeInput = document.getElementById('codeInput');
+    const errorMsg = document.getElementById('errorMsg');
+    const CORRECT_CODE = "XO4";
+    let popupInterval;
+  
+    function showCodePopup() {
+      codeOverlay.classList.add('active');
+      codeInput.focus();
+    }
+  
+    function hideCodePopup() {
+      codeOverlay.classList.remove('active');
+    }
+  
+    function checkCode() {
+      if (codeInput.value.toUpperCase() === CORRECT_CODE) {
+        hideCodePopup();
+        clearInterval(popupInterval);
+      } else {
+        errorMsg.textContent = "Incorrect code, try again!";
+        codeInput.value = '';
+        setTimeout(() => errorMsg.textContent = '', 2000);
+      }
+    }
+  
+    // Show immediately on page load
+    setTimeout(showCodePopup, 1000);
+    
+    // Then every 4 minutes (240000ms)
+    popupInterval = setInterval(showCodePopup, 240000);
+  
+    // Listen for code submission
+    codeInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+        checkCode();
+      }
+    });
+  
+    // Also check when clicking outside the input box
+    codeOverlay.addEventListener('click', function(e) {
+      if (e.target === codeOverlay) {
+        checkCode();
+      }
+    });
+  </script>
+    
+    <script>
+        // Create floating hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '😂';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.getElementById('heartsContainer').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+        
+        // Create hearts periodically
+        setInterval(createHeart, 300);
+        
+        // Memory Form Handling
+        const uploadBtn = document.getElementById('uploadBtn');
+        const memoryFormOverlay = document.getElementById('memoryFormOverlay');
+        const closeForm = document.getElementById('closeForm');
+        const memoryForm = document.getElementById('memoryForm');
+        
+        // Show form with animation
+        uploadBtn.addEventListener('click', function() {
+            memoryFormOverlay.classList.add('active');
+        });
+        
+        // Hide form with animation
+        closeForm.addEventListener('click', function() {
+            memoryFormOverlay.classList.remove('active');
+        });
+        
+        // Hide form when clicking outside
+        memoryFormOverlay.addEventListener('click', function(e) {
+            if (e.target === memoryFormOverlay) {
+                memoryFormOverlay.classList.remove('active');
+            }
+        });
+        
+        // Form submission
+        memoryForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            submitBtn.disabled = true;
+            
+            fetch("{% url 'add-memory' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Show success message briefly before reload
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    alert(data.message || 'Error saving memory');
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the memory');
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

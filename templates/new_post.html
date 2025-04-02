@@ -1,0 +1,227 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Post</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/bbbm.ico' %}">
+
+    <style>
+        /* Base Variables */
+        :root {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --navbar-bg: #1e1e1e;
+            --navbar-border: #444;
+            --button-primary: #00bfff;
+            --button-primary-hover: #0080ff;
+            --button-danger: #d9534f;
+            --button-danger-hover: #b52b27;
+            --input-bg: #1e1e1e;
+            --border-color: #444;
+            --placeholder: #888;
+            --container-bg: #1e1e1e;
+            --box-shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            width: 97%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--navbar-bg);
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--navbar-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .navbar .title a {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .navbar a[href="/posts/new"] {
+            background-color: var(--button-primary);
+        }
+
+        .navbar a[href="/posts/new"]:hover {
+            background-color: var(--button-primary-hover);
+        }
+
+        .navbar a[href*='logout'] {
+            background-color: var(--button-danger);
+        }
+
+        .navbar a[href*='logout']:hover {
+            background-color: var(--button-danger-hover);
+        }
+
+        .container {
+            background: var(--container-bg);
+            padding: 20px;
+            max-width: 500px; /* Maximum width for larger screens */
+            width: 100%; /* Full width for smaller screens */
+            margin-top: 70px; /* Adjusted for fixed navbar */
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--box-shadow);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        input, textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--placeholder);
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--button-primary);
+            outline: none; /* Remove default outline */
+        }
+
+        button {
+            background-color: var(--button-primary);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px; 
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--button-primary-hover);
+            transform: scale(1.05);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+    .navbar {
+        padding: 8px; /* Smaller padding for mobile */
+    }
+
+    .navbar a {
+        font-size: 12px; /* Smaller font for mobile */
+    }
+
+    .container {
+        margin-top: 60px; /* Adjust for mobile */
+        padding: 15px; /* Less padding */
+        background: transparent; /* Make the background transparent */
+        box-shadow: none; /* Remove shadow for a cleaner look */
+        animation: fadeIn 0.5s ease-in-out; /* Add animation */
+    }
+
+    button {
+        padding: 10px; /* Adjust button padding */
+        font-size: 14px; /* Smaller button font */
+    }
+
+    h2 {
+        font-size: 20px; /* Smaller heading font */
+    }
+}
+    </style>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.querySelector("form");
+            form.addEventListener("submit", function(event) {
+                const title = document.getElementById("title").value.trim();
+                const content = document.getElementById("content").value.trim();
+                if (title === "" || content === "") {
+                    event.preventDefault();
+                    alert("Please fill in all required fields.");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="title">
+            <a href="{% url 'go-to-user5-chat' %}" style="color: #00bfff; font-weight: bold; font-size: 18px; text-decoration: none; padding: 10px 15px; border-radius: 5px; background-color: #1e1e1e; transition: background-color 0.3s, color 0.3s;">
+                Go to Chats
+            </a>
+        </div>
+        <div style="color: var(--text-color); font-size: 16px; font-weight: bold;">
+            Welcome, {{ user.username }}
+        </div>
+        <div>
+        </a>
+        <a href="/posts/" style="color: #00bfff; font-weight: bold; font-size: 18px; text-decoration: none; padding: 10px 15px; border-radius: 5px; background-color: #1e1e1e; transition: background-color 0.3s, color 0.3s; margin-left: 10px;">
+            See Post
+        </a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Create New Post</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" placeholder="Enter post title" required>
+
+            <label for="content">Content</label>
+            <textarea name="content" id="content" rows="4" placeholder="Write your post here..." required></textarea>
+
+            <label for="photo">Upload Image (Optional)</label>
+            <input type="file" name="photo" id="photo">
+
+            <button type="submit">Post</button>
+        </form>
+    </div>
+</body>
+</html>
