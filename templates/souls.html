@@ -10,6 +10,77 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* Code Overlay CSS */
+        .code-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(5px);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+        }
+      
+        .code-overlay.active {
+          opacity: 1;
+          visibility: visible;
+        }
+      
+        .code-box {
+          background: var(--bg-color);
+          padding: 2rem;
+          border-radius: 10px;
+          text-align: center;
+          max-width: 300px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+          transform: scale(0.9);
+          transition: transform 0.3s ease;
+        }
+      
+        .code-overlay.active .code-box {
+          transform: scale(1);
+        }
+      
+        .code-box h2 {
+          margin-top: 0;
+          color: var(--text-color);
+        }
+      
+        .code-box input {
+          width: 100%;
+          padding: 12px;
+          margin: 15px 0;
+          border: 2px solid var(--primary-color);
+          border-radius: 5px;
+          background: rgba(255, 255, 255, 0.1);
+          color: var(--text-color);
+          font-size: 18px;
+          text-align: center;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+        }
+      
+        .hint {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.6);
+          margin-top: 5px;
+        }
+      
+        .error-msg {
+          color: var(--secondary-color);
+          height: 20px;
+          margin-top: 10px;
+          font-size: 14px;
+        }
+      </style>
+    <style>
         :root {
             --primary-color: #6a0dad;
             --secondary-color: #ff6b6b;
@@ -244,46 +315,7 @@
             color: rgba(255, 255, 255, 0.5);
         }
     </style>
-</head>
-<body>
-    <div class="tunnel-header">
-        <a href="/posts/" style="color: #00bfff; font-weight: bold; font-size: 18px; text-decoration: none; padding: 10px 15px; border-radius: 5px; background-color: #1e1e1e; transition: background-color 0.3s, color 0.3s;">
-            Posts
-        </a><br>
-        <h1>Our ----- Tunnel</h1>
-
-        
-    </div>
-    
-    <div class="gallery-container" id="gallery">
-        {% for memory in memories %}
-        <div class="memory-card">
-            <img src="{{ memory.image.url }}" alt="{{ memory.name }}" class="gallery-image" data-full="{{ memory.image.url }}">
-            <div class="caption">
-                <h3>{{ memory.name }}</h3>
-                <p>{{ memory.caption }}</p>
-                <small>{{ memory.created_at|date:"M d, Y h:i A" }}</small>
-            </div>
-        </div>
-        {% empty %}
-        <div class="empty-state">
-            <p>No memories yet. Click "Upload Our Memory" to add your first memory!</p>
-        </div>
-        {% endfor %}
-        
-        <!-- Image Modal Viewer -->
-        <div class="image-modal" id="imageModal">
-            <span class="close-modal">&times;</span>
-            <img class="modal-content" id="modalImage">
-            <div class="modal-caption">
-                <h3 id="modalTitle"></h3>
-                <p id="modalText"></p>
-                <small id="modalDate"></small>
-            </div>
-        </div>
-    </div>
-    
-    <style>
+     <style>
         /* Image Modal Styles */
         .image-modal {
             display: none;
@@ -350,10 +382,103 @@
             transform: scale(1.02);
         }
     </style>
+</head>
+<body>
+    <div class="tunnel-header">
+        <a href="/posts/" style="color: #00bfff; font-weight: bold; font-size: 18px; text-decoration: none; padding: 10px 15px; border-radius: 5px; background-color: #1e1e1e; transition: background-color 0.3s, color 0.3s;">
+            Posts
+        </a><br>
+        <h1>Our ----- Tunnel</h1>
+
+        
+    </div>
     
-    <script>
-        // Image Modal Functionality
-        document.addEventListener('DOMContentLoaded', function() {
+    <div class="gallery-container" id="gallery">
+        <!-- Dynamic content will be inserted here by JavaScript -->
+        <div class="empty-state">
+            <p>Loading memories...</p>
+        </div>
+        
+        <!-- Image Modal Viewer -->
+        <div class="image-modal" id="imageModal">
+            <span class="close-modal">&times;</span>
+            <img class="modal-content" id="modalImage">
+            <div class="modal-caption">
+                <h3 id="modalTitle"></h3>
+                <p id="modalText"></p>
+                <small id="modalDate"></small>
+            </div>
+        </div>
+    </div><script>
+        // Function to fetch memories from server
+        async function fetchMemories() {
+            try {
+                const response = await fetch("{% url 'souls-tunnel' %}", {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.json();
+                displayMemories(data.memories);
+            } catch (error) {
+                console.error('Error fetching memories:', error);
+                document.getElementById('gallery').innerHTML = `
+                    <div class="empty-state">
+                        <p>Error loading memories. Please refresh the page.</p>
+                    </div>
+                `;
+            }
+        }
+    
+        // Function to display memories in the gallery
+        function displayMemories(memories) {
+            const gallery = document.getElementById('gallery');
+            
+            if (memories.length === 0) {
+                gallery.innerHTML = `
+                    <div class="empty-state">
+                        <p>No memories yet. Click "Upload Our Memory" to add your first memory!</p>
+                    </div>
+                `;
+                return;
+            }
+    
+            let html = '';
+            memories.forEach(memory => {
+                html += `
+                    <div class="memory-card">
+                        <img src="${memory.image_url}" alt="${memory.name}" class="gallery-image" data-full="${memory.image_url}">
+                        <div class="caption">
+                            <h3>${memory.name}</h3>
+                            <p>${memory.caption}</p>
+                            <small>${memory.created_at}</small>
+                        </div>
+                    </div>
+                `;
+            });
+    
+            // Add the modal HTML back (since we're replacing the entire gallery)
+            html += `
+                <div class="image-modal" id="imageModal">
+                    <span class="close-modal">&times;</span>
+                    <img class="modal-content" id="modalImage">
+                    <div class="modal-caption">
+                        <h3 id="modalTitle"></h3>
+                        <p id="modalText"></p>
+                        <small id="modalDate"></small>
+                    </div>
+                </div>
+            `;
+    
+            gallery.innerHTML = html;
+            setupImageModal();
+        }
+    
+        // Function to setup image modal functionality
+        function setupImageModal() {
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
             const modalTitle = document.getElementById('modalTitle');
@@ -361,44 +486,76 @@
             const modalDate = document.getElementById('modalDate');
             const closeBtn = document.querySelector('.close-modal');
             
-            // Get all gallery images
-            const images = document.querySelectorAll('.gallery-image');
-            
-            // Add click event to each image
-            images.forEach(img => {
+            document.querySelectorAll('.gallery-image').forEach(img => {
                 img.addEventListener('click', function() {
                     modal.style.display = 'block';
                     modalImg.src = this.dataset.full;
-                    modalTitle.textContent = this.closest('.memory-card').querySelector('h3').textContent;
+                    modalTitle.textContent = this.alt;
                     modalText.textContent = this.closest('.memory-card').querySelector('p').textContent;
                     modalDate.textContent = this.closest('.memory-card').querySelector('small').textContent;
-                    document.body.style.overflow = 'hidden'; // Prevent scrolling
                 });
             });
             
-            // Close modal
-            closeBtn.addEventListener('click', function() {
+            closeBtn.addEventListener('click', () => {
                 modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
             });
             
-            // Close when clicking outside image
-            modal.addEventListener('click', function(e) {
+            modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
                 }
             });
+        }
+    
+        // Function to handle form submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
             
-            // Close with ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal.style.display === 'block') {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
+            try {
+                const response = await fetch("{% url 'add-memory' %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Refresh the memories after successful upload
+                    await fetchMemories();
+                    // Close the form
+                    document.getElementById('memoryFormOverlay').classList.remove('active');
+                    // Reset the form
+                    form.reset();
+                } else {
+                    alert(result.message || 'Error saving memory');
                 }
-            });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while saving the memory');
+            }
+        }
+    
+        // Initialize everything when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch and display memories
+            fetchMemories();
+            
+            // Setup form submission
+            document.getElementById('memoryForm').addEventListener('submit', handleFormSubmit);
+            
+            // Setup periodic refresh (every 2 minutes)
+            setInterval(fetchMemories, 120000);
         });
     </script>
+    
+   
+    
+   
     
     <div class="upload-section">
         <button class="upload-btn" id="uploadBtn">
@@ -445,78 +602,55 @@
     </div>
   </div>
   
-  <style>
-    /* Code Overlay CSS */
-    .code-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(5px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-  
-    .code-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-  
-    .code-box {
-      background: var(--bg-color);
-      padding: 2rem;
-      border-radius: 10px;
-      text-align: center;
-      max-width: 300px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
-    }
-  
-    .code-overlay.active .code-box {
-      transform: scale(1);
-    }
-  
-    .code-box h2 {
-      margin-top: 0;
-      color: var(--text-color);
-    }
-  
-    .code-box input {
-      width: 100%;
-      padding: 12px;
-      margin: 15px 0;
-      border: 2px solid var(--primary-color);
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-color);
-      font-size: 18px;
-      text-align: center;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-  
-    .hint {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.6);
-      margin-top: 5px;
-    }
-  
-    .error-msg {
-      color: var(--secondary-color);
-      height: 20px;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-  </style>
-  
+ 
+  <script>
+    // Image Modal Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalText = document.getElementById('modalText');
+        const modalDate = document.getElementById('modalDate');
+        const closeBtn = document.querySelector('.close-modal');
+        
+        // Get all gallery images
+        const images = document.querySelectorAll('.gallery-image');
+        
+        // Add click event to each image
+        images.forEach(img => {
+            img.addEventListener('click', function() {
+                modal.style.display = 'block';
+                modalImg.src = this.dataset.full;
+                modalTitle.textContent = this.closest('.memory-card').querySelector('h3').textContent;
+                modalText.textContent = this.closest('.memory-card').querySelector('p').textContent;
+                modalDate.textContent = this.closest('.memory-card').querySelector('small').textContent;
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            });
+        });
+        
+        // Close modal
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close when clicking outside image
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Close with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    });
+</script>
   <script>
     // Code Overlay JS
     const codeOverlay = document.getElementById('codeOverlay');
