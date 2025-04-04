@@ -157,6 +157,17 @@ from django.http import JsonResponse
 @login_required
 def souls_tunnel(request):
     memories = Memory.objects.filter(user=request.user).order_by('-created_at')
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        memories_data = [{
+            'id': memory.id,
+            'name': memory.name,
+            'image_url': memory.image.url,
+            'caption': memory.caption,
+            'created_at': memory.created_at.strftime("%b %d, %Y %I:%M %p")
+        } for memory in memories]
+        return JsonResponse({'memories': memories_data})
+    
     return render(request, 'souls.html', {'memories': memories})
 
 @login_required
