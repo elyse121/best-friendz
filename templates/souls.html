@@ -409,7 +409,59 @@
                 <small id="modalDate"></small>
             </div>
         </div>
-    </div><script>
+    </div>
+   
+    
+   
+    
+   
+    
+    <div class="upload-section">
+        <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-cloud-upload-alt"></i>
+            Upload Our Memory
+        </button>
+        
+    </div>
+    
+    <!-- Memory Form Overlay -->
+    <div class="memory-form-overlay" id="memoryFormOverlay">
+        <div class="memory-form-container">
+            <button class="close-form" id="closeForm">&times;</button>
+            <h2>Share a Memory</h2>
+            <form id="memoryForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="memoryName">Memory Name</label>
+                    <input type="text" id="memoryName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryImage">Image</label>
+                    <input type="file" id="memoryImage" name="image" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryCaption">Caption</label>
+                    <textarea id="memoryCaption" name="caption" required></textarea>
+                </div>
+                <button type="submit" class="form-submit-btn">
+                    <i class="fas fa-save"></i> Save Memory
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="floating-hearts" id="heartsContainer"></div>
+    <!-- Add this just before </body> -->
+<div class="code-overlay" id="codeOverlay">
+    <div class="code-box">
+      <h2>Enter Access Code</h2>
+      <input type="text" id="codeInput" placeholder="Enter code..." maxlength="3">
+      <p class="hint">XO2??????????</p>
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
+  </div>
+  
+ <script>
         // Function to fetch memories from server
         async function fetchMemories() {
             try {
@@ -546,63 +598,13 @@
             fetchMemories();
             
             // Setup form submission
-            document.getElementById('memoryForm').addEventListener('submit', handleFormSubmit);
+           // document.getElementById('memoryForm').addEventListener('submit', handleFormSubmit);
             
             // Setup periodic refresh (every 2 minutes)
             setInterval(fetchMemories, 120000);
         });
     </script>
     
-   
-    
-   
-    
-    <div class="upload-section">
-        <button class="upload-btn" id="uploadBtn">
-            <i class="fas fa-cloud-upload-alt"></i>
-            Upload Our Memory
-        </button>
-        
-    </div>
-    
-    <!-- Memory Form Overlay -->
-    <div class="memory-form-overlay" id="memoryFormOverlay">
-        <div class="memory-form-container">
-            <button class="close-form" id="closeForm">&times;</button>
-            <h2>Share a Memory</h2>
-            <form id="memoryForm" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="memoryName">Memory Name</label>
-                    <input type="text" id="memoryName" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="memoryImage">Image</label>
-                    <input type="file" id="memoryImage" name="image" accept="image/*" required>
-                </div>
-                <div class="form-group">
-                    <label for="memoryCaption">Caption</label>
-                    <textarea id="memoryCaption" name="caption" required></textarea>
-                </div>
-                <button type="submit" class="form-submit-btn">
-                    <i class="fas fa-save"></i> Save Memory
-                </button>
-            </form>
-        </div>
-    </div>
-    
-    <div class="floating-hearts" id="heartsContainer"></div>
-    <!-- Add this just before </body> -->
-<div class="code-overlay" id="codeOverlay">
-    <div class="code-box">
-      <h2>Enter Access Code</h2>
-      <input type="text" id="codeInput" placeholder="Enter code..." maxlength="3">
-      <p class="hint">XO2??????????</p>
-      <div class="error-msg" id="errorMsg"></div>
-    </div>
-  </div>
-  
- 
   <script>
     // Image Modal Functionality
     document.addEventListener('DOMContentLoaded', function() {
@@ -783,5 +785,7 @@
             });
         });
     </script>
+
+
 </body>
 </html>
