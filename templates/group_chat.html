@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="{% static 'images/bbbm.ico' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
-    <style>
+     <style>
         /* Combined and Optimized CSS */
         :root {
           --bg-color: #ffffff;
@@ -40,6 +40,7 @@
           margin: 0;
           display: flex;
           flex-direction: column;
+          width: 100%;
         }
         
         .container-fluid {
@@ -134,7 +135,20 @@
           position: sticky;
           bottom: 0;
         }
-        
+        .mobile-back-btn {
+  display: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+/* Only show on screens smaller than 768px */
+@media (max-width: 768px) {
+  .mobile-back-btn {
+    display: block;
+  }
+}
+
         /* Mobile Styles */
         @media (max-width: 768px) {
           .sidebar {
@@ -170,7 +184,15 @@
           font-size: 1.5rem;
           margin-right: 10px;
         }
-        </style>
+        @media (max-width: 768px) {
+  .col-9 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+      </style>
 </head>
 <body style="height: 100vh; display: flex; flex-direction: column">
     <div class="container-fluid h-100">
@@ -214,8 +236,8 @@
                     {% endfor %}
                     
                     <!-- Additional Navigation Links -->
-                    <a href="{% url 'go-to-user5-chat' %}" class="list-group-item list-group-item-action">
-                        BACK TO PRIVATE CHAT
+                    <a href="/posts/" class="list-group-item list-group-item-action">
+                        BACK TO POSTS
                     </a>
                     
                     <!-- Group Chat Entry -->
@@ -227,7 +249,7 @@
                                  style="width: 1.8rem; height: 1.8rem; object-fit: cover"/>
                             <div class="w-100">
                                 <strong>Group Chat</strong>
-                                <small class="d-block text-truncate last-msg">Join the group chat</small>
+                                <small class="d-block text-truncate last-msg">welcom to the group chat</small>
                             </div>
                         </div>
                     </div>
@@ -253,6 +275,10 @@
                     <img src="https://ui-avatars.com/api/?name={{ room_name|urlencode }}&size=64&background=random" 
                          class="rounded-circle mr-2" 
                          style="height: 45px; width: 45px"/>
+                         <div class="mobile-back-btn d-md-none mr-2" onclick="goBack()">
+                          <i class="fas fa-arrow-left"></i>
+                        </div>
+                        
                     <h3 class="mb-0">{{ room_name }}</h3>
                     
                     <!-- Search Form -->
@@ -398,6 +424,11 @@
           // Initial scroll to bottom
           scrollToBottom();
       });
+      function goBack() {
+  window.history.back();
+}
+
       </script>
+    
 </body>
 </html>
