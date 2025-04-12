@@ -11,211 +11,183 @@
 
     <style>
         body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #000; /* Dark mode */
-    color: #fff;
-    margin: 0;
-    padding: 0;
-}
-
-.navbar {
-    background-color: #000;
-    color: #fff;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #222;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.navbar .title {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.navbar a {
-    color: #fff;
-    margin-left: 15px;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-.navbar a:hover {
-    text-decoration: underline;
-}
-
-.content {
-    padding: 20px;
-    max-width: 600px; /* Limiting max width for desktop */
-    margin: 0 auto; /* Center alignment */
-}
-
-.post-box {
-    background-color: #111;
-    border: 1px solid #222;
-    border-radius: 20px; /* Keeps the box rounded */
-    padding: 15px 20px;
-    margin-bottom: 20px;
-    overflow: hidden; /* Ensures any overflow is hidden, maintaining the curve */
-    width: 100%; /* Full width of post box */
-    box-sizing: border-box; /* Include padding and border in width */
-}
-
-.post-box h3 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #fff;
-}
-
-.post-box p {
-    color: #ccc;
-    line-height: 1.5;
-}
-
-.post-box img {
-    width: 100%; /* Makes image take full width of container */
-    height: auto; /* Maintain aspect ratio */
-    object-fit: cover; /* Ensures image fits without distortion */
-    border-radius: 20px; /* Match the box's border-radius for consistent rounding */
-}
-
-.post-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.post-actions button {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.post-actions button:hover {
-    color: #fff;
-}
-
-.profile-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-    border: 1px solid #444;
-}
-
-textarea {
-    width: 100%;
-    border: none;
-    border-radius: 8px;
-    padding: 10px;
-    resize: none;
-    background-color: #222;
-    color: #fff;
-    margin-top: 10px;
-}
-
-.comment-section {
-    margin-top: 15px;
-    border-top: 1px solid #222;
-    padding-top: 10px;
-}
-
-.comment-section p {
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.footer {
-    text-align: center;
-    padding: 15px;
-    background-color: #000;
-    font-size: 14px;
-    color: #555;
-    border-top: 1px solid #222;
-    margin-top: 40px;
-}
-
-/* Media Query for Mobile Devices */
-@media (max-width: 600px) {
-    .content {
-        padding: 10px; /* Adjust padding for mobile */
-        width: 100%; /* Full width of the content area */
-        box-sizing: border-box; /* Include padding in width */
-    }
-
-    .post-box {
-        padding: 10px; /* Adjust padding for mobile */
-        width: 100%; /* Ensure the post box fills the width */
-        margin-bottom: 20px; /* Maintain spacing between posts */
-    }
-
-    .post-box img {
-        width: 100%; /* Full width for images */
-        height: auto; /* Maintain aspect ratio */
-    }
-}@media (max-width: 768px) {
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Prevent extra scrolling */
-  }
-
-  .chat {
-    width: 100vw !important;
-    height: 100dvh !important; /* Use `dvh` for modern viewport handling */
-    display: flex;
-    flex-direction: column;
-  }
-
-  .chat-header {
-    flex-shrink: 0;
-    position: sticky;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-    background-color: var(--chatbox-bg);
-    padding: 10px 15px;
-  }
-
-  /* Ensure chatbox fills remaining height */
-  #chatbox {
-    flex-grow: 1;
-    width: 100% !important;
-    padding: 5px 10px !important;
-    overflow-y: auto;
-    min-height: 0; /* Ensures it shrinks properly */
-    background-color: var(--chatbox-bg);
-  }
-
-  /* Input area stays at the bottom */
-  .chat-input {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    background: var(--chatbox-bg);
-    border-top: 1px solid var(--border-color);
-    padding: 8px 10px;
-    box-sizing: border-box;
-  }
-}
-
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #000; /* Dark mode */
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .navbar {
+            background-color: #000;
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+    
+        .navbar .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    
+        .navbar a {
+            color: #fff;
+            margin-left: 15px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+    
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+    
+        .post-box {
+            background-color: #111;
+            border: 1px solid #222;
+            border-radius: 20px; /* Keeps the box rounded */
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            overflow: hidden; /* Ensures any overflow is hidden, maintaining the curve */
+            width: 100%; /* Full width of post box */
+            box-sizing: border-box; /* Include padding and border in width */
+        }
+    
+        .post-box h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #fff;
+        }
+    
+        .post-box p {
+            color: #ccc;
+            line-height: 1.5;
+        }
+    
+        .post-box img {
+            width: 100%; /* Makes image take full width of container */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: cover; /* Ensures image fits without distortion */
+            border-radius: 20px; /* Match the box's border-radius for consistent rounding */
+        }
+    
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+    
+        .post-actions button {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    
+        .post-actions button:hover {
+            color: #fff;
+        }
+    
+        .profile-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+    
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 1px solid #444;
+        }
+    
+        textarea {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            resize: none;
+            background-color: #222;
+            color: #fff;
+            margin-top: 10px;
+        }
+    
+        .comment-section {
+            margin-top: 15px;
+            border-top: 1px solid #222;
+            padding-top: 10px;
+        }
+    
+        .comment-section p {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+    
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #000;
+            font-size: 14px;
+            color: #555;
+            border-top: 1px solid #222;
+            margin-top: 40px;
+        }
+    
+        .content {
+            padding: 20px;
+            max-width: 700px; /* Default width for desktop */
+            margin: 0 auto; /* Center alignment */
+            box-sizing: border-box;
+            /* Use full width on mobile - adjust with JavaScript if needed */
+        }
+    
+        /* Media Query for Mobile Devices */
+        @media (max-width: 750px) {
+            .post-box {
+                padding: 10px;  /* Reduce padding in the post box for mobile */
+                margin-bottom: 15px;  /* Ensure posts don't overlap */
+            }
+    
+            .post-box img {
+                width: 100%;    /* Ensure image fills the container */
+                height: auto;   /* Maintain aspect ratio */
+                object-fit: cover; /* Prevent distortion */
+            }
+        }
+    
+        /* Adjust for even smaller screens like on mobile phones */
+        @media (max-width: 480px) {
+            .navbar .title {
+                font-size: 20px;
+            }
+    
+            .navbar a {
+                font-size: 14px;
+            }
+    
+            .post-box {
+                padding: 8px;  /* Further reduce padding on very small screens */
+            }
+    
+            .post-actions button {
+                font-size: 12px; /* Adjust button size for small screens */
+            }
+    
+            .footer {
+                font-size: 12px;  /* Smaller footer text */
+            }
+        }
     </style>
+    
 </head>
 <body>
     <div class="navbar" style="
@@ -227,7 +199,8 @@ textarea {
     border-bottom: 1px solid #f7f8f9;">
     
     <div class="title">
-        <a href="{% url 'go-to-user5-chat' %}" style="
+        <!-- CHANGE LINK TO RE-CONNECT TO CHAT.HTML-->
+        <a href="{% url 'group_chat' %}" style="
             color: white; 
             text-decoration: none; 
             font-size: 18px; 
@@ -361,7 +334,7 @@ textarea {
             Logout
         </a>
     </div>
-</div>
+ </div>
 
     
 
@@ -370,14 +343,14 @@ textarea {
         <div class="post-box">
             <!-- User Info -->
             <!-- User Info -->
-<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
     {% if post.author.userprofile.profile_picture %}
         <img src="{{ post.author.userprofile.profile_picture.url }}" alt="Profile Pic" style="width: 40px; height: 40px; border-radius: 50%;">
     {% else %}
         <img src="{% static 'default-avatar.png' %}" alt="Default Avatar" style="width: 40px; height: 40px; border-radius: 50%;">
     {% endif %}
     <strong style="color: #fff;">{{ post.author.username }}</strong>
-</div>
+      </div>
 
         
             <!-- Post Content -->
