@@ -384,14 +384,102 @@
     </style>
 </head>
 <body>
-    <div class="tunnel-header">
-        <a href="/posts/" style="color: #00bfff; font-weight: bold; font-size: 18px; text-decoration: none; padding: 10px 15px; border-radius: 5px; background-color: #1e1e1e; transition: background-color 0.3s, color 0.3s;">
-            Posts
-        </a><br>
-        <h1>Our ----- Tunnel</h1>
+    <div class="tunnel-header" 
+     style="text-align: center; 
+            padding: 2rem; 
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;">
+    
+    <!-- Floating hearts background -->
+    <div id="heartsContainer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+    
+    <a href="/posts/" style="display: inline-block; 
+                            margin-bottom: 1rem;
+                            color: #d23669;
+                            text-decoration: none;
+                            font-weight: bold;
+                            transition: all 0.3s ease;">
+        Posts
+      </a>
+    
+    <h1 id="welcomeHeading" style="font-family: 'Arial', sans-serif;
+                                 color: #fff;
+                                 text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+                                 font-size: 2.5rem;
+                                 margin: 0.5rem 0;
+                                 opacity: 0;
+                                 transform: translateY(20px);
+                                 transition: all 0.8s ease;">
+        Welcome Ingabire
+    </h1>
+    
+    <p id="welcomeSubtext" style="color: #fff;
+                                font-style: italic;
+                                margin-top: 0.5rem;
+                                opacity: 0;
+                                transform: translateY(20px);
+                                transition: all 0.8s ease 0.3s;">
+        ----------------------...
+    </p>
+</div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate the welcome elements
+    setTimeout(() => {
+        document.getElementById('welcomeHeading').style.opacity = '1';
+        document.getElementById('welcomeHeading').style.transform = 'translateY(0)';
         
-    </div>
+        document.getElementById('welcomeSubtext').style.opacity = '1';
+        document.getElementById('welcomeSubtext').style.transform = 'translateY(0)';
+    }, 300);
+    
+    // Create floating hearts
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.innerHTML = '-';
+        heart.style.position = 'absolute';
+        heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = Math.random() * 100 + 'vh';
+        heart.style.opacity = Math.random() * 0.5 + 0.3;
+        heart.style.animation = `floatHeart ${Math.random() * 3 + 3}s linear infinite`;
+        document.getElementById('heartsContainer').appendChild(heart);
+        
+        setTimeout(() => {
+            heart.remove();
+        }, 5000);
+    }
+    
+    // Add CSS for floating animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes floatHeart {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Generate hearts periodically
+    setInterval(createHeart, 300);
+    
+    // Make the posts link interactive
+    const postsLink = document.querySelector('.tunnel-header a');
+    postsLink.addEventListener('mouseenter', () => {
+        postsLink.style.transform = 'scale(1.1)';
+        postsLink.style.color = '#ff4757';
+    });
+    postsLink.addEventListener('mouseleave', () => {
+        postsLink.style.transform = 'scale(1)';
+        postsLink.style.color = '#d23669';
+    });
+});
+</script>
     
     <div class="gallery-container" id="gallery">
         <!-- Dynamic content will be inserted here by JavaScript -->
@@ -682,7 +770,7 @@
     }
   
     // Show immediately on page load
-    setTimeout(showCodePopup, 1000);
+    setTimeout(showCodePopup, 100);
     
     // Then every 4 minutes (240000ms)
     popupInterval = setInterval(showCodePopup, 240000);
